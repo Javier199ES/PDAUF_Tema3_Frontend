@@ -1,4 +1,6 @@
 // src/api/componentes.js
+const API_BASE = import.meta.env.VITE_API_URL || "";
+
 
 function authHeader(username, password) {
   return {
@@ -7,7 +9,7 @@ function authHeader(username, password) {
 }
 
 export async function getComponentes(username, password) {
-  const res = await fetch("/api/componentes", {
+  const res = await fetch(`${API_BASE}/api/componentes`, {
     headers: authHeader(username, password),
   });
 
@@ -16,7 +18,7 @@ export async function getComponentes(username, password) {
 }
 
 export async function createComponente(username, password, payload) {
-  const res = await fetch("/api/componentes", {
+  const res = await fetch(`${API_BASE}/api/componentes`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +32,7 @@ export async function createComponente(username, password, payload) {
 }
 
 export async function deleteComponente(username, password, id) {
-  const res = await fetch(`/api/componentes/${id}`, {
+  const res = await fetch(`${API_BASE}/api/componentes/${id}`, {
     method: "DELETE",
     headers: authHeader(username, password),
   });
