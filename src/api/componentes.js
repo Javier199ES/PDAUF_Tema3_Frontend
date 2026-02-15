@@ -1,5 +1,5 @@
 // src/api/componentes.js
-const API_BASE = import.meta.env.VITE_API_URL || "";
+const API_BASE = "https://pdauf-tema3.onrender.com";
 
 
 function authHeader(username, password) {
