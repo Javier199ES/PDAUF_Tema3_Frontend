@@ -1,5 +1,12 @@
 // src/services/api.js (o donde lo tengas)
-const API_BASE = import.meta.env.VITE_API_URL || "https://pdauf-tema3.onrender.com";
+const API_BASE = import.meta.env.VITE_API_URL; // https://pdauf-tema3.onrender.com
+
+if (!API_BASE) {
+  throw new Error(
+    "VITE_API_URL no está definida. Revisar .env o variables de entorno en Render."
+  );
+}
+
 
 // ✅ Solo UNA vez
 export function authHeader(username, password) {
