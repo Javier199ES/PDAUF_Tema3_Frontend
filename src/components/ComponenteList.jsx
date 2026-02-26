@@ -37,6 +37,11 @@ export default function ComponenteList({ username, password }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // ====== CAMBIO: MENSAJE DE CREACIÓN (feedback UX) ======
+  // Mostramos un mensaje verde cuando se crea correctamente un componente
+  const [success, setSuccess] = useState("");
+  // =======================================================
+
   // Crear
   const [form, setForm] = useState({
     nombre: "",
@@ -57,6 +62,10 @@ export default function ComponenteList({ username, password }) {
   async function cargar() {
     try {
       setError("");
+      // ====== CAMBIO: MENSAJE DE CREACIÓN ======
+      // Si refrescamos, ocultamos el mensaje de éxito (para no confundir)
+      setSuccess("");
+      // ========================================
       setLoading(true);
       const data = await getComponentes(username, password);
       setComponentes(data);
@@ -81,6 +90,10 @@ export default function ComponenteList({ username, password }) {
     e.preventDefault();
     try {
       setError("");
+      // ====== CAMBIO: MENSAJE DE CREACIÓN ======
+      // Limpia el mensaje anterior antes de crear
+      setSuccess("");
+      // ========================================
 
       const payload = {
         nombre: form.nombre.trim(),
@@ -92,7 +105,17 @@ export default function ComponenteList({ username, password }) {
       const creado = await createComponente(username, password, payload);
       setComponentes((prev) => [...prev, creado]);
       setForm({ nombre: "", categoria: "", precio: "", stock: "" });
+
+      // ====== CAMBIO: MENSAJE DE CREACIÓN (con transición) ======
+      setSuccess("Componente creado correctamente ✅");
+      // Se oculta solo para que no se quede fijo en pantalla
+      setTimeout(() => setSuccess(""), 2000);
+      // ==========================================================
     } catch (e) {
+      // ====== CAMBIO: MENSAJE DE CREACIÓN ======
+      // Si hay error, quitamos el success para no mezclar mensajes
+      setSuccess("");
+      // ========================================
       setError(e.message || "Error creando componente");
     }
   }
@@ -101,6 +124,9 @@ export default function ComponenteList({ username, password }) {
   async function onDelete(id) {
     try {
       setError("");
+      // ====== CAMBIO: MENSAJE DE CREACIÓN ======
+      setSuccess("");
+      // ========================================
       await deleteComponente(username, password, id);
       setComponentes((prev) => prev.filter((c) => c.id !== id));
       if (editingId === id) setEditingId(null);
@@ -112,6 +138,9 @@ export default function ComponenteList({ username, password }) {
   // ====== EDIT INLINE ======
   function startEdit(c) {
     setError("");
+    // ====== CAMBIO: MENSAJE DE CREACIÓN ======
+    setSuccess("");
+    // ========================================
     setEditingId(c.id);
     setEditForm({
       nombre: c.nombre ?? "",
@@ -133,6 +162,9 @@ export default function ComponenteList({ username, password }) {
   async function saveEdit(id) {
     try {
       setError("");
+      // ====== CAMBIO: MENSAJE DE CREACIÓN ======
+      setSuccess("");
+      // ========================================
 
       const payload = {
         nombre: editForm.nombre.trim(),
@@ -175,6 +207,17 @@ export default function ComponenteList({ username, password }) {
           {error}
         </div>
       )}
+
+      {/* ====== CAMBIO: MENSAJE DE CREACIÓN (visible y documentable) ====== */}
+      {success && (
+        <div
+          className="mt-4 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-200
+                     transition-opacity duration-300"
+        >
+          {success}
+        </div>
+      )}
+      {/* ================================================================= */}
 
       {/* Layout */}
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
